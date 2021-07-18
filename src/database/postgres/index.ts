@@ -3,10 +3,11 @@ import pg from 'pg';
 import { error, log } from '../../utils/helper';
 import constants from '../../utils/constants';
 import dictionary from '../../utils/dictionary';
+import DatabaseProvider from '../database.proto';
 
 import QUERIES from './queries';
 
-class Postgres {
+class Postgres extends DatabaseProvider {
   client = new pg.Client({
     user: constants.POSTGRES.DB_USER,
     host: constants.POSTGRES.DB_URL,

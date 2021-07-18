@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import Cache from '../../cache';
 import getLeetcodeDataFromUsername from '../__mocks__/utils.mock';
 import MockDatabaseProvider from '../__mocks__/database.mock';
-import users from '../__mocks__/data.mock';
+import { users, mockDatabaseData } from '../__mocks__/data.mock';
 import dictionary from '../../utils/dictionary';
 import constants from '../../utils/constants';
 import { CacheResponse } from '../../cache/response.model';
@@ -121,7 +121,7 @@ test('cache.index.Cache.refreshUsers method', async () => {
 
   // Check case, where User is deleted from LeetCode
   const fakeUsername = 'non_existing_username';
-  Cache.database.savedUsers = [{ username: fakeUsername }];
+  mockDatabaseData.users = [fakeUsername];
   await Cache.refreshUsers();
   // eslint-disable-next-line no-console
   expect(console.log).toHaveBeenCalledWith(
@@ -306,7 +306,7 @@ test('cache.index.Cache.clearUsers method', async () => {
   expect(Cache.userAmount).toBe(0);
 
   // Check case, where clearing Users fails
-  Cache.database.fakeResult = false;
+  mockDatabaseData.fakeResult = false;
   const resultFail: CacheResponse = await Cache.clearUsers();
   expect(resultFail.status).toBe(constants.STATUS.ERROR);
   expect(resultFail.detail).toBe(

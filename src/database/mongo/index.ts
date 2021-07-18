@@ -3,11 +3,12 @@ import * as mongoose from 'mongoose';
 import constants from '../../utils/constants';
 import dictionary from '../../utils/dictionary';
 import { log, error } from '../../utils/helper';
+import DatabaseProvider from '../database.proto';
 
 import UserModel from './schemas';
 
 // Main class for MongoDB Database
-class MongoDB {
+class MongoDB extends DatabaseProvider {
     // If authentication credentials were provided in environment, use them.
     // If not, use empty string in MongoDB connection
     credentials: string = constants.MONGO.DB_AUTHENTICATION_ENABLED

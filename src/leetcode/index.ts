@@ -15,9 +15,7 @@ import {
   User,
   SubmissionData,
 } from './models';
-import {
-  getLeetcodeUsernameLink, getLeetcodeProblemLink, getGraphQLHeaders,
-} from './utils';
+import { getLeetcodeUsernameLink, getLeetcodeProblemLink } from './utils';
 import {
   userProfileGraphQLQuery,
   recentSubmissionListGraphQLQuery,
@@ -28,19 +26,16 @@ import gqlQuery from './graphql/utils';
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-async function getLeetcodeDataFromUsername(
-  username: string, csrfToken: string,
-): Promise<User> {
+async function getLeetcodeDataFromUsername(username: string): Promise<User> {
   // Data for GraphQL Response
   const graphQLLink = `${constants.LEETCODE_URL}/graphql`;
-  const graphQLHeaders: Record<string, string> = getGraphQLHeaders(csrfToken);
 
   // Get User Profile Data from GraphQL
   const userProfileQuery: GraphQLQuery = userProfileGraphQLQuery(username);
   const userProfileContext: GraphQLContext = {
     link: graphQLLink,
     query: userProfileQuery,
-    headers: graphQLHeaders,
+    headers: {},
   };
   const userData: UserProfile = await gqlQuery<UserProfile>(userProfileContext);
 
@@ -51,7 +46,7 @@ async function getLeetcodeDataFromUsername(
   const submissionContext: GraphQLContext = {
     link: graphQLLink,
     query: submissionsQuery,
-    headers: graphQLHeaders,
+    headers: {},
   };
   const submissionData: RecentSubmissionList = (
     await gqlQuery<RecentSubmissionList>(submissionContext)
@@ -78,7 +73,7 @@ async function getLeetcodeDataFromUsername(
   const contestContext: GraphQLContext = {
     link: graphQLLink,
     query: contestQuery,
-    headers: graphQLHeaders,
+    headers: {},
   };
   const contestData: Contest = await gqlQuery<Contest>(contestContext);
 

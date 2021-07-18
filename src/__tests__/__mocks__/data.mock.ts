@@ -4,7 +4,9 @@ import {
 import constants from '../../utils/constants';
 import { User } from '../../leetcode/models';
 
-const users: User[] = [
+import { MockDatabaseInterface } from './models/mockData.model';
+
+export const users: User[] = [
   {
     name: 'Random User Name',
     link: getLeetcodeUsernameLink('random_username'),
@@ -154,5 +156,16 @@ const users: User[] = [
     },
   },
 ];
+
+export const mockDatabaseData: MockDatabaseInterface = {
+  users: [],
+  mockUser1() { return this.users[0]; },
+  savedUsers() {
+    return this.users.map((user: User) => (
+      { ...this.mockUser1(), username: user.username }
+    ));
+  },
+  fakeResult: true,
+};
 
 export default users;

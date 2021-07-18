@@ -3,10 +3,11 @@ import { open } from 'sqlite';
 
 import { log } from '../../utils/helper';
 import dictionary from '../../utils/dictionary';
+import DatabaseProvider from '../database.proto';
 
 import QUERIES from './queries';
 
-class SQLite {
+class SQLite extends DatabaseProvider {
   database;
 
   // Connect to Database

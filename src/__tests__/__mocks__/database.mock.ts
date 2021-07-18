@@ -1,65 +1,60 @@
-import { User } from '../../leetcode/models';
-
-import users from './data.mock';
-
-const mockUser1: User = users[0];
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-unused-vars */
-class MockDatabaseProvider {
+import { User } from '../../leetcode/models';
+import DatabaseProvider from '../../database/database.proto';
+
+import { mockDatabaseData } from './data.mock';
+
+class MockDatabaseProvider extends DatabaseProvider {
   isRefreshing = false;
-
-  savedUsers: User[] = (
-    users.map((user) => ({ ...mockUser1, username: user.username }))
-  );
-
-  fakeResult = true;
-
-  users: string[] = [];
 
   // Connect to Database
   async connect(): Promise<boolean> {
-    return new Promise((resolve) => resolve(true));
+    return new Promise((resolve) => resolve(mockDatabaseData.fakeResult));
   }
 
   // Create Users table if not exists
   createUserTable(): boolean {
-    return this.fakeResult;
+    return mockDatabaseData.fakeResult;
   }
 
   // Find all Users
   async findAllUsers(): Promise<User[]> {
-    return this.savedUsers;
+    return mockDatabaseData.users.map((username) => (
+      { ...mockDatabaseData.mockUser1(), username }
+    ));
   }
 
   // Load User by `username`
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async loadUser(username: string): Promise<boolean> {
-    return this.fakeResult;
+    return mockDatabaseData.fakeResult;
   }
 
   // Add User to Database
   async addUser(username: string): Promise<boolean> {
-    if (this.users.includes(username)) {
+    if (mockDatabaseData.users.includes(username)) {
       return false;
     }
-    this.users.push(username);
+    mockDatabaseData.users.push(username);
     return true;
   }
 
   // Remove User from Database
   async removeUser(username: string): Promise<boolean> {
-    if (!this.users.includes(username)) {
+    if (!mockDatabaseData.users.includes(username)) {
       return false;
     }
-    this.users = this.users.filter((uname) => uname !== username);
+    mockDatabaseData.users = (
+      mockDatabaseData.users.filter((uname) => uname !== username)
+    );
     return true;
   }
 
   // Remove all Users from Database
   async removeAllUsers(): Promise<boolean> {
-    this.users = [];
-    return this.fakeResult;
+    mockDatabaseData.users = [];
+    return mockDatabaseData.fakeResult;
   }
 }
 

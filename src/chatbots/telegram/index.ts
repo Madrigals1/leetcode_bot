@@ -1,3 +1,6 @@
+/* eslint-disable import/first */
+process.env.NTBA_FIX_319 = '1';
+
 import * as TelegramBot from 'node-telegram-bot-api';
 
 import { log } from '../../utils/helper';
@@ -7,8 +10,6 @@ import dictionary from '../../utils/dictionary';
 import { Options, Context } from '../models';
 
 import { getArgs, reply } from './utils';
-
-process.env.NTBA_FIX_319 = '1';
 
 class Telegram {
   token: string = constants.TELEGRAM.TOKEN;

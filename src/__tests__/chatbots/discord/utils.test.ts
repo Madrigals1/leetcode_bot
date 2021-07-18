@@ -1,8 +1,6 @@
 import { formatMessage, reply } from '../../../chatbots/discord/utils';
 import MockFuncDiscord from '../../__mocks__/chatbots/discord.mock';
-import { DiscordTestCase } from '../../../chatbots/models';
-
-const mockFuncDiscord: MockFuncDiscord = new MockFuncDiscord();
+import { DiscordTestCase, Options } from '../../../chatbots/models';
 
 test('chatbots.discord.utils.formatMessage function', async () => {
   const testCases: string[][] = [
@@ -22,13 +20,22 @@ test('chatbots.discord.utils.formatMessage function', async () => {
 });
 
 test('chatbots.discord.utils.reply function', async () => {
+  const mockDiscordInstances: MockFuncDiscord[] = [
+    new MockFuncDiscord(),
+    new MockFuncDiscord(),
+    new MockFuncDiscord(),
+  ];
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const testCases: DiscordTestCase[] = [
     {
       message: '<b>Message 1</b>',
       context: {
         channel: {
-          send: mockFuncDiscord.send,
+          send(message: string, options: Options = {}) {
+            mockDiscordInstances[0].formattedMessage = message;
+            mockDiscordInstances[0].options = options;
+          },
         },
         photoUrl: 'random_url',
         args: ['asd', 'asd', 'asd'],
@@ -44,7 +51,10 @@ test('chatbots.discord.utils.reply function', async () => {
       message: '<i>Message 2</i>',
       context: {
         channel: {
-          send: mockFuncDiscord.send,
+          send(message: string, options: Options = {}) {
+            mockDiscordInstances[1].formattedMessage = message;
+            mockDiscordInstances[1].options = options;
+          },
         },
         args: ['asd', 'asd', 'asd'],
         reply: () => new Promise(() => 'asd'),
@@ -52,7 +62,7 @@ test('chatbots.discord.utils.reply function', async () => {
         prefix: '!',
       },
       expected: 'Success',
-      expectedMessage: '**Message 2**',
+      expectedMessage: '*Message 2*',
       expectedOptions: {},
     },
     {
@@ -72,11 +82,17 @@ test('chatbots.discord.utils.reply function', async () => {
 
   testCases.forEach(async ({
     message, context, expected, expectedMessage, expectedOptions,
-  }) => {
-    const result: string = await reply(message, context);
-
-    expect(result).toBe(expected);
-    expect(expectedMessage).toBe(mockFuncDiscord.formattedMessage);
-    expect(expectedOptions).toBe(mockFuncDiscord.options);
+  }, i) => {
+    reply(message, context)
+      .then((result) => {
+        expect(result).toBe(expected);
+        expect(expectedMessage).toBe(mockDiscordInstances[i].formattedMessage);
+        expect(expectedOptions).toEqual(mockDiscordInstances[i].options);
+      })
+      .catch((err: Error) => {
+        expect(err).toEqual(expected);
+        expect(expectedMessage).toBe(mockDiscordInstances[i].formattedMessage);
+        expect(expectedOptions).toEqual(mockDiscordInstances[i].options);
+      });
   });
 });

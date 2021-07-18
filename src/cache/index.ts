@@ -5,7 +5,6 @@ import Database from '../database';
 import { log, delay } from '../utils/helper';
 import constants from '../utils/constants';
 import dictionary from '../utils/dictionary';
-import { getCSRFToken } from '../leetcode/utils';
 import { User } from '../leetcode/models';
 
 import { CacheResponse } from './response.model';
@@ -20,12 +19,6 @@ class Cache {
   getLeetcodeDataFromUsername: CallableFunction = getLeetcodeDataFromUsername;
 
   delayTime: number = parseInt(constants.DELAY_TIME_MS, 10);
-
-  csrfToken: string = null;
-
-  constructor() {
-    getCSRFToken.then((token: string) => { this.csrfToken = token; });
-  }
 
   // Return all users
   allUsers(): User[] {
@@ -83,9 +76,7 @@ class Cache {
 
         // Get data from LeetCode related to this User
         // eslint-disable-next-line no-await-in-loop
-        const userData = await this.getLeetcodeDataFromUsername(
-          username, this.csrfToken,
-        );
+        const userData = await this.getLeetcodeDataFromUsername(username);
 
         // If UserData was returned from Backend, replace User in cache
         if (userData) {
@@ -149,9 +140,7 @@ class Cache {
 
     if (user) {
       // Load data from LeetCode by Username
-      const userData = await this.getLeetcodeDataFromUsername(
-        username, this.csrfToken,
-      );
+      const userData = await this.getLeetcodeDataFromUsername(username);
 
       if (userData) {
         this.users.push(userData);

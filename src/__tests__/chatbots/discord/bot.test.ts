@@ -17,6 +17,8 @@ afterAll(async () => {
 test('chatbots.discord.bot.createBot function', async () => {
   expect(typeof createBot).toBe('function');
 
+  if (!constants.DISCORD.TEST_ENABLE) return;
+
   // Create a test bot with test token
   const bot: DiscordBot.Client = await createBot(constants.DISCORD.TEST_TOKEN);
 
